@@ -1,8 +1,13 @@
+using Microsoft.EntityFrameworkCore;
+using RecipeCubeWebService.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddDbContext<RecipeCubeContext>(options =>
+options.UseMySQL(builder.Configuration.GetConnectionString("RecipeCube")));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

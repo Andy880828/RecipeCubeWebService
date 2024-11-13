@@ -1,4 +1,4 @@
-@RecipeCubeWebService_HostAddress = http://localhost:5258
+@RecipeCubeWebService_HostAddress = http://localhost:5173
 
 GET {{RecipeCubeWebService_HostAddress}}/weatherforecast/
 Accept: application/json
