@@ -1,0 +1,6 @@
+@RecipeCubeWebService_HostAddress = http://localhost:5258
+
+GET {{RecipeCubeWebService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
