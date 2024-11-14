@@ -15,7 +15,7 @@ public partial class user
 
     public string? NormalizedEmail { get; set; }
 
-    public sbyte EmailConfirmed { get; set; }
+    public bool EmailConfirmed { get; set; }
 
     public string? PasswordHash { get; set; }
 
@@ -25,23 +25,23 @@ public partial class user
 
     public string? PhoneNumber { get; set; }
 
-    public sbyte PhoneNumberConfirmed { get; set; }
+    public bool PhoneNumberConfirmed { get; set; }
 
-    public sbyte TwoFactorEnabled { get; set; }
+    public bool TwoFactorEnabled { get; set; }
 
     public DateTime? LockoutEnd { get; set; }
 
-    public sbyte LockoutEnabled { get; set; }
+    public bool LockoutEnabled { get; set; }
 
     public int AccessFailedCount { get; set; }
 
-    public sbyte dietary_restrictions { get; set; }
+    public bool dietary_restrictions { get; set; }
 
-    public sbyte exclusiveChecked { get; set; }
+    public bool exclusiveChecked { get; set; }
 
     public int groupId { get; set; }
 
-    public sbyte preferredChecked { get; set; }
+    public bool preferredChecked { get; set; }
 
-    public sbyte status { get; set; }
+    public bool status { get; set; }
 }

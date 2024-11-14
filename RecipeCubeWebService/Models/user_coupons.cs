@@ -11,7 +11,7 @@ public partial class user_coupons
 
     public int? couponId { get; set; }
 
-    public sbyte status { get; set; }
+    public bool status { get; set; }
 
     public DateTime acquireDate { get; set; }
 }

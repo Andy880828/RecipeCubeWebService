@@ -9,7 +9,7 @@ public partial class coupons
 
     public string? couponName { get; set; }
 
-    public sbyte? status { get; set; }
+    public bool? status { get; set; }
 
     public decimal? discountValue { get; set; }
 

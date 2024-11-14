@@ -15,7 +15,7 @@ public partial class products
 
     public int? stock { get; set; }
 
-    public sbyte? status { get; set; }
+    public bool? status { get; set; }
 
     public string? photo { get; set; }
 

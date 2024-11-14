@@ -13,7 +13,7 @@ public partial class product_evaluate
 
     public string? commentMessage { get; set; }
 
-    public sbyte commentStars { get; set; }
+    public int commentStars { get; set; }
 
     public DateTime date { get; set; }
 }

@@ -11,11 +11,11 @@ public partial class recipes
 
     public string? userId { get; set; }
 
-    public sbyte? isCustom { get; set; }
+    public bool? isCustom { get; set; }
 
-    public sbyte? restriction { get; set; }
+    public bool? restriction { get; set; }
 
-    public sbyte? westEast { get; set; }
+    public bool? westEast { get; set; }
 
     public string? category { get; set; }
 
@@ -29,7 +29,7 @@ public partial class recipes
 
     public string? photo { get; set; }
 
-    public sbyte? status { get; set; }
+    public bool? status { get; set; }
 
     public string? time { get; set; }
 

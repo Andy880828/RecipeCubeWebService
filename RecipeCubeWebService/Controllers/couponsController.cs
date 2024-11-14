@@ -13,11 +13,11 @@ namespace RecipeCubeWebService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class couponsController : ControllerBase
+    public class CouponsController : ControllerBase
     {
         private readonly RecipeCubeContext _context;
 
-        public couponsController(RecipeCubeContext context)
+        public CouponsController(RecipeCubeContext context)
         {
             _context = context;
         }

@@ -17,5 +17,5 @@ public partial class inventory
 
     public DateTime? expiryDate { get; set; }
 
-    public sbyte? visibility { get; set; }
+    public bool? visibility { get; set; }
 }

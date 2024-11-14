@@ -6,7 +6,7 @@
 
         public string couponName { get; set; }
 
-        public int? couponStatus { get; set; }
+        public bool? couponStatus { get; set; }
 
         public decimal? discountValue { get; set; }
 
@@ -16,8 +16,7 @@
 
         public string userId { get; set; }
 
-
-        public int? usedStatus { get; set; }
+        public bool? usedStatus { get; set; }
 
         public DateTime acquireDate { get; set; }
 
