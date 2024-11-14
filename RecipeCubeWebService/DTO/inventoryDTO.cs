@@ -15,7 +15,7 @@ namespace RecipeCubeWebService.DTO
         public decimal? gram { get; set; }
         public string photo { get; set; }
         public decimal? quantity { get; set; }
-        public DateTime? expiryDate { get; set; }
+        public DateOnly? expiryDate { get; set; }
         public bool? isExpiring { get; set; }
         public bool? isExpired { get; set; }
         public bool? visibility { get; set; }

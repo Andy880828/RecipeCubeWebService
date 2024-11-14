@@ -71,7 +71,7 @@ namespace RecipeCubeWebService.Controllers
                     userName = userName,
                     ingredientId = userInventory.ingredientId,
                     quantity = userInventory.quantity,
-                    expiryDate = userInventory.expiryDate,
+                    expiryDate = userInventory.expiryDate.HasValue ? DateOnly.FromDateTime(userInventory.expiryDate.Value) : default(DateOnly),
                     isExpiring = userInventory.expiryDate < threeDayAfter && userInventory.expiryDate > today ? true : false,
                     isExpired = userInventory.expiryDate < today ? true : false,
                     visibility = userInventory.visibility,
