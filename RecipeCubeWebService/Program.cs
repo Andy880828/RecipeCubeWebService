@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RecipeCubeWebService.Models;
 using System.Text;
-//using Microsoft.AspNetCore.Authentication.JwtBearer;
-//using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using RecipeCubeWebService.Controllers;
 using Microsoft.AspNetCore.DataProtection;
@@ -22,6 +22,11 @@ options.UseMySQL(builder.Configuration.GetConnectionString("RecipeCube")));
 
 builder.Services.AddScoped<IPasswordHasher<user>, PasswordHasher<user>>();
 
+builder.Services.AddHttpClient<UsersController>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7188"); // API 路徑
+});
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
@@ -31,6 +36,27 @@ builder.Services.AddCors(options =>
 // 設定 Data Protection
 builder.Services.AddDataProtection()
     .SetApplicationName("RecipeCubeWebService");
+
+// JWT 認證配置
+var key = Encoding.ASCII.GetBytes("thisisaverylongsecretkeyforjwtwhichis256bits!!");
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(x =>
+{
+    x.RequireHttpsMetadata = false;
+    x.SaveToken = true;
+    x.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ClockSkew = TimeSpan.Zero
+    };
+});
+
 
 
 var app = builder.Build();
@@ -42,10 +68,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseHttpsRedirection(); // 使用 HTTPS 重新導向
+app.UseStaticFiles(); // 使用靜態檔案
+app.UseCors("AllowAll"); // 使用 CORS 策略
+app.UseAuthentication(); // 啟用 JWT 驗證
+app.UseAuthorization(); // 啟用授權
 
-app.UseAuthorization();
+app.MapControllers(); // 映射控制器
 
-app.MapControllers();
+app.Run(); // 運行應用程式
 
-app.Run();
