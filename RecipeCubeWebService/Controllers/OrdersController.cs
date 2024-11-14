@@ -424,7 +424,7 @@ namespace RecipeCubeWebService.Controllers
                                 quantity = x.orderItem.quantity,
                                 price = x.orderItem.price,
                                 productName = x.product.productName, // 獲取產品名稱
-                                ingredientId = x.product.ingredientId, // 獲取食品原料的 IngredientId
+                                ingredientId = x.product.ingredientId, // 獲取食品原料的 ingredientId
                                 photo = x.product.photo, // 獲取產品照片
                                 unitQuantity = x.product.unitQuantity,  //獲取單位量
                                 unit = ingredient.unit // 從 Ingredients 獲取單位
