@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RecipeCubeWebService.DTO;
 using RecipeCubeWebService.Models;
+using static Microsoft.AspNetCore.Razor.Language.TagHelperMetadata;
 
 namespace RecipeCubeWebService.Controllers
 {
@@ -20,38 +22,65 @@ namespace RecipeCubeWebService.Controllers
             _context = context;
         }
 
-        // GET: api/coupons
+        // 獲取所有優惠券配user_coupons
+        // GET: api/Coupons
+        [HttpGet("GetCouponsWithUserCoupons")]
+        public async Task<ActionResult<IEnumerable<couponsDTO>>> GetCouponsWithUserCoupons()
+        {
+            var coupons = await (
+                from coupon in _context.coupons
+                join userCoupon in _context.user_coupons
+                    on coupon.couponId equals userCoupon.couponId
+                select new couponsDTO
+                {
+                    couponId = coupon.couponId,
+                    couponName = coupon.couponName,
+                    couponStatus = coupon.status,
+                    discountType = coupon.discountType,
+                    discountValue = coupon.discountValue,
+                    userConponId = userCoupon.userCouponId,
+                    userId = userCoupon.userId,
+                    usedStatus = userCoupon.status,
+                    acquireDate = userCoupon.acquireDate,
+                    minSpend = coupon.minSpend,
+                }
+                ).ToListAsync();
+            return Ok(coupons);
+        }
+
+
+        // GET: api/Coupons
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<coupons>>> Getcoupons()
+        public async Task<ActionResult<IEnumerable<coupons>>> GetCoupons()
         {
             return await _context.coupons.ToListAsync();
         }
 
-        // GET: api/coupons/5
+        // GET: api/Coupons/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<coupons>> Getcoupons(int id)
+        public async Task<ActionResult<coupons>> GetCoupon(int id)
         {
-            var coupons = await _context.coupons.FindAsync(id);
+            var coupon = await _context.coupons.FindAsync(id);
 
-            if (coupons == null)
+            if (coupon == null)
             {
                 return NotFound();
             }
 
-            return coupons;
+            return coupon;
         }
 
-        // PUT: api/coupons/5
+        // PUT: api/Coupons/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> Putcoupons(int id, coupons coupons)
+        public async Task<IActionResult> PutCoupon(int id, coupons coupon)
         {
-            if (id != coupons.couponId)
+            if (id != coupon.couponId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(coupons).State = EntityState.Modified;
+            _context.Entry(coupon).State = EntityState.Modified;
 
             try
             {
@@ -59,7 +88,7 @@ namespace RecipeCubeWebService.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!couponsExists(id))
+                if (!CouponExists(id))
                 {
                     return NotFound();
                 }
@@ -72,36 +101,37 @@ namespace RecipeCubeWebService.Controllers
             return NoContent();
         }
 
-        // POST: api/coupons
+        // POST: api/Coupons
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<coupons>> Postcoupons(coupons coupons)
+        public async Task<ActionResult<coupons>> PostCoupon(coupons coupon)
         {
-            _context.coupons.Add(coupons);
+            _context.coupons.Add(coupon);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("Getcoupons", new { id = coupons.couponId }, coupons);
+            return CreatedAtAction("GetCoupon", new { id = coupon.couponId }, coupon);
         }
 
-        // DELETE: api/coupons/5
+        // DELETE: api/Coupons/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Deletecoupons(int id)
+        public async Task<IActionResult> DeleteCoupon(int id)
         {
-            var coupons = await _context.coupons.FindAsync(id);
-            if (coupons == null)
+            var coupon = await _context.coupons.FindAsync(id);
+            if (coupon == null)
             {
                 return NotFound();
             }
 
-            _context.coupons.Remove(coupons);
+            _context.coupons.Remove(coupon);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool couponsExists(int id)
+        private bool CouponExists(int id)
         {
             return _context.coupons.Any(e => e.couponId == id);
         }
+
     }
 }
