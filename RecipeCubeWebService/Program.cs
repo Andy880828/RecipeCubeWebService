@@ -24,7 +24,13 @@ builder.Services.AddScoped<IPasswordHasher<user>, PasswordHasher<user>>();
 
 builder.Services.AddHttpClient<UsersController>(client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7188"); // API 路徑
+    client.BaseAddress = new Uri("https://localhost:32768"); // API 路徑
+});
+
+// 確保 Kestrel 綁定到所有 IP 地址
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(5000); // 綁定所有 IP 地址到 5000 端口
 });
 
 builder.Services.AddCors(options =>
@@ -73,7 +79,6 @@ app.UseStaticFiles(); // 使用靜態檔案
 app.UseCors("AllowAll"); // 使用 CORS 策略
 app.UseAuthentication(); // 啟用 JWT 驗證
 app.UseAuthorization(); // 啟用授權
-
 app.MapControllers(); // 映射控制器
 
 app.Run(); // 運行應用程式
