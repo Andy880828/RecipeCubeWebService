@@ -17,6 +17,7 @@ using System.Text;
 using System.Net.Http;
 using System.Net.Http.Json;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
+using Microsoft.Extensions.Options;
 
 namespace RecipeCubeWebService.Controllers
 {
@@ -25,15 +26,20 @@ namespace RecipeCubeWebService.Controllers
     public class UsersController : ControllerBase
     {
         private readonly RecipeCubeContext _context;
-        // 偷內建hash方法，注入後就能拿來用了
         private readonly IPasswordHasher<user> _passwordHasher;
-        private readonly HttpClient _httpClient;
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ApiSettings _apiSettings;
 
-        public UsersController(RecipeCubeContext context, IPasswordHasher<user> passwordHasher, HttpClient httpClient)
+        public UsersController(
+            RecipeCubeContext context,
+            IPasswordHasher<user> passwordHasher,
+            IHttpClientFactory httpClientFactory,
+            IOptions<ApiSettings> apiSettings)
         {
             _context = context;
             _passwordHasher = passwordHasher;
-            _httpClient = httpClient;
+            _httpClientFactory = httpClientFactory;
+            _apiSettings = apiSettings.Value;
         }
 
         // GET: api/Users 測試GET有沒有壞掉用
@@ -128,13 +134,14 @@ namespace RecipeCubeWebService.Controllers
             _context.user.Add(newUser);
             await _context.SaveChangesAsync();
 
-            var emailVerificationEndpoint = "https://localhost:7188/api/EmailVerification/GenerateToken";
+            var httpClient = _httpClientFactory.CreateClient("RecipeApi");
+
             var emailVerificationRequest = new
             {
                 Email = signUp.email
             };
 
-            var response = await _httpClient.PostAsJsonAsync(emailVerificationEndpoint, emailVerificationRequest);
+            var response = await httpClient.PostAsJsonAsync(_apiSettings.EmailVerificationEndpoint, emailVerificationRequest);
             if (!response.IsSuccessStatusCode)
             {
                 return StatusCode((int)response.StatusCode, new { Message = "Failed to generate verification link." });
@@ -142,8 +149,7 @@ namespace RecipeCubeWebService.Controllers
 
             var verificationData = await response.Content.ReadFromJsonAsync<VerificationResponseDTO>();
 
-            // 呼叫 Email API 發送郵件
-            var emailSendEndpoint = "https://localhost:7188/api/Gmail/send";
+            // 郵件發送
             var emailSendRequest = new
             {
                 toName = "",
@@ -152,7 +158,7 @@ namespace RecipeCubeWebService.Controllers
                 body = $"請點擊以下連結以驗證您的帳號：{verificationData?.verificationLink}"
             };
 
-            var emailResponse = await _httpClient.PostAsJsonAsync(emailSendEndpoint, emailSendRequest);
+            var emailResponse = await httpClient.PostAsJsonAsync(_apiSettings.EmailSendEndpoint, emailSendRequest);
             if (!emailResponse.IsSuccessStatusCode)
             {
                 return StatusCode((int)emailResponse.StatusCode, new { Message = "Failed to send verification email." });

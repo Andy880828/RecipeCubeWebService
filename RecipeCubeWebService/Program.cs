@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using RecipeCubeWebService.Controllers;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,11 +23,6 @@ options.UseMySQL(builder.Configuration.GetConnectionString("RecipeCube")));
 
 builder.Services.AddScoped<IPasswordHasher<user>, PasswordHasher<user>>();
 
-builder.Services.AddHttpClient<UsersController>(client =>
-{
-    client.BaseAddress = new Uri("https://localhost:32768"); // API 路徑
-});
-
 // 確保 Kestrel 綁定到所有 IP 地址
 builder.WebHost.ConfigureKestrel(options =>
 {
@@ -37,6 +33,16 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
         builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+});
+
+builder.Services.Configure<ApiSettings>(
+    builder.Configuration.GetSection("ApiSettings"));
+
+// 添加 HttpClient 工廠
+builder.Services.AddHttpClient("RecipeApi", (serviceProvider, client) =>
+{
+    var apiSettings = serviceProvider.GetRequiredService<IOptions<ApiSettings>>().Value;
+    client.BaseAddress = new Uri(apiSettings.BaseApiUrl);
 });
 
 // 設定 Data Protection
