@@ -63,12 +63,13 @@ namespace RecipeCubeWebService.Controllers
             foreach (inventory userInventory in userInventories)
             {
                 var ingredient = ingredients.Where(i => i.ingredientId == userInventory.ingredientId);
+                var inventoryUserName = await _context.user.Where(u => u.Id == userInventory.userId).Select(u => u.UserName).FirstOrDefaultAsync();
                 inventoryDTO inventoryDTO = new inventoryDTO
                 {
                     inventoryId = userInventory.inventoryId,
                     groupId = (int)groupId,
                     userId = userInventory.userId,
-                    userName = userName,
+                    userName = inventoryUserName,
                     ingredientId = userInventory.ingredientId,
                     quantity = userInventory.quantity,
                     expiryDate = userInventory.expiryDate.HasValue ? DateOnly.FromDateTime(userInventory.expiryDate.Value) : default(DateOnly),

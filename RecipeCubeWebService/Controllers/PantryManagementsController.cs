@@ -61,13 +61,14 @@ namespace RecipeCubeWebService.Controllers
             {
                 var ingredient = ingredients.Where(i => i.ingredientId == userPantryManagement.ingredientId);
                 var ownerName = await _context.user.Where(u => u.Id == userPantryManagement.ownerId).Select(u => u.UserName).FirstOrDefaultAsync();
+                var pantryUserName = await _context.user.Where(u => u.Id == userPantryManagement.userId).Select(u => u.UserName).FirstOrDefaultAsync();
 
                 PantryDTO pantryDTO = new PantryDTO
                 {
                     pantryId = userPantryManagement.pantryId,
                     groupId = (int)groupId,
                     userId = userPantryManagement.userId,
-                    userName = userName,
+                    userName = pantryUserName,
                     ownerId = userPantryManagement.ownerId,
                     ownerName = ownerName,
                     ingredientId = userPantryManagement.ingredientId,
